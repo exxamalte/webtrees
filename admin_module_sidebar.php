@@ -66,52 +66,50 @@ if ($action=='update_mods' && WT_Filter::checkCsrf()) {
 ?>
 <h2><?php echo $controller->getPageTitle(); ?></h2>
 
-<div id="sidebars" align="center">
-	<form method="post">
-		<input type="hidden" name="action" value="update_mods">
-		<?php echo WT_Filter::getCsrf(); ?>
-		<table id="sidebars_table" class="modules_table">
-			<thead>
-				<tr>
-					<th><?php echo WT_I18N::translate('Sidebar'); ?></th>
-					<th><?php echo WT_I18N::translate('Description'); ?></th>
-					<th><?php echo WT_I18N::translate('Order'); ?></th>
-					<th><?php echo WT_I18N::translate('Access level'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				$order = 1;
-				foreach ($modules as $module_name=>$module) {
-					?>
-					<tr class="sortme">
-						<td ><?php echo $module->getTitle(); ?></td>
-						<td><?php echo $module->getDescription(); ?></td>
-						<td><input type="text" size="3" value="<?php echo $order; ?>" name="sidebarorder-<?php echo $module->getName(); ?>"></td>
-						<td>
-							<table class="modules_table2">
-								<?php
-								foreach (WT_Tree::getAll() as $tree) {
-									$varname = 'sidebaraccess-'.$module_name.'-'.$tree->tree_id;
-									$access_level=WT_DB::prepare(
-										"SELECT access_level FROM `##module_privacy` WHERE gedcom_id=? AND module_name=? AND component='sidebar'"
-									)->execute(array($tree->tree_id, $module_name))->fetchOne();
-									if ($access_level===null) {
-										$access_level=$module->defaultAccessLevel();
-									}
-									echo '<tr><td>', $tree->tree_title_html, '</td><td>';
-									echo edit_field_access_level($varname, $access_level);
-								}
-								?>
-							</table>
-						</td>
-					</tr>
-				<?php
-				$order++;
-				}
-				?>
-			</tbody>
-		</table>
-		<input type="submit" value="<?php echo WT_I18N::translate('save'); ?>">
-	</form>
-</div>
+<form method="post">
+	<input type="hidden" name="action" value="update_mods">
+	<?php echo WT_Filter::getCsrf(); ?>
+	<table id="sidebars_table" class="table table-bordered">
+		<thead>
+		<tr>
+			<th><?php echo WT_I18N::translate('Sidebar'); ?></th>
+			<th><?php echo WT_I18N::translate('Description'); ?></th>
+			<th><?php echo WT_I18N::translate('Order'); ?></th>
+			<th><?php echo WT_I18N::translate('Access level'); ?></th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php
+		$order = 1;
+		foreach ($modules as $module_name=>$module) {
+			?>
+			<tr class="sortme">
+				<td ><?php echo $module->getTitle(); ?></td>
+				<td><?php echo $module->getDescription(); ?></td>
+				<td><input type="text" size="3" value="<?php echo $order; ?>" name="sidebarorder-<?php echo $module->getName(); ?>"></td>
+				<td>
+					<table class="modules_table2">
+						<?php
+						foreach (WT_Tree::getAll() as $tree) {
+							$varname = 'sidebaraccess-'.$module_name.'-'.$tree->tree_id;
+							$access_level=WT_DB::prepare(
+								"SELECT access_level FROM `##module_privacy` WHERE gedcom_id=? AND module_name=? AND component='sidebar'"
+							)->execute(array($tree->tree_id, $module_name))->fetchOne();
+							if ($access_level===null) {
+								$access_level=$module->defaultAccessLevel();
+							}
+							echo '<tr><td>', $tree->tree_title_html, '</td><td>';
+							echo edit_field_access_level($varname, $access_level);
+						}
+						?>
+					</table>
+				</td>
+			</tr>
+			<?php
+			$order++;
+		}
+		?>
+		</tbody>
+	</table>
+	<input class="btn btn-primary" type="submit" value="<?php echo WT_I18N::translate('save'); ?>">
+</form>

@@ -24,10 +24,9 @@
 
 use WT\Auth;
 
-if (!defined('WT_WEBTREES')) {
-	header('HTTP/1.0 403 Forbidden');
-	exit;
-}
+return new WT\Theme\Colors;
+?>
+
 /**
  * Convert a menu into our theme-specific format
  *
